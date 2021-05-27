@@ -50,7 +50,7 @@ Phase2Results RunPhase2(
     uint64_t memory_size,
     uint32_t const num_buckets,
     uint32_t const log_num_buckets,
-    uint8_t const flags)
+    bool const show_progress)
 {
     // After pruning each table will have 0.865 * 2^k or fewer entries on
     // average
@@ -163,7 +163,8 @@ Phase2Results RunPhase2(
             filename + ".p2.t" + std::to_string(table_index),
             uint32_t(k),
             0,
-            strategy_t::quicksort_last);
+            strategy_t::quicksort_last,
+            memory_size);
 
         // as we scan the table for the second time, we'll also need to remap
         // the positions and offsets based on the next_bitfield.
@@ -245,7 +246,7 @@ Phase2Results RunPhase2(
         if (table_index != 7) {
             tmp_1_disks[table_index].Truncate(0);
         }
-        if (flags & SHOW_PROGRESS) {
+        if (show_progress) {
             progress(2, 8 - table_index, 6);
         }
     }

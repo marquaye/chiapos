@@ -11,6 +11,15 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
+find_package(Git)
+execute_process(
+  COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_COMMIT_HASH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+add_definitions("-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
+
 project(chiapos C CXX ASM)
 
 # CMake 3.14+
@@ -33,7 +42,7 @@ FetchContent_MakeAvailable(cxxopts)
 FetchContent_Declare(
   gulrak
   GIT_REPOSITORY https://github.com/gulrak/filesystem.git
-  GIT_TAG        v1.5.6
+  GIT_TAG        v1.5.4
 )
 FetchContent_MakeAvailable(gulrak)
 

@@ -20,11 +20,15 @@
 #include "plotter_disk.hpp"
 #include "prover_disk.hpp"
 #include "verifier.hpp"
+#include "thread_pool.hpp"
 
 using std::string;
 using std::vector;
 using std::endl;
 using std::cout;
+
+thread_pool pool(4);
+synced_stream sync_out;
 
 void HexToBytes(const string &hex, uint8_t *result)
 {
@@ -135,13 +139,6 @@ int main(int argc, char *argv[]) try {
         HexToBytes(id, id_bytes.data());
 
         DiskPlotter plotter = DiskPlotter();
-        uint8_t phases_flags = 0;
-        if (!nobitfield) {
-            phases_flags = ENABLE_BITFIELD;
-        }
-        if (show_progress) {
-            phases_flags = phases_flags | SHOW_PROGRESS;
-        }
         plotter.CreatePlotDisk(
                 tempdir,
                 tempdir2,
@@ -156,7 +153,8 @@ int main(int argc, char *argv[]) try {
                 num_buckets,
                 num_stripes,
                 num_threads,
-                phases_flags);
+                nobitfield,
+                show_progress);
     } else if (operation == "prove") {
         if (argc < 3) {
             HelpAndQuit(options);
