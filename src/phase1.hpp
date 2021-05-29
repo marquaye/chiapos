@@ -637,7 +637,7 @@ std::vector<uint64_t> RunPhase1(
     }
 
     uint64_t prevtableentries = 1ULL << k;
-    f1_start_time.PrintElapsed("F1 complete, time:");
+    f1_start_time.PrintElapsed("F1 New complete, time:");
     globals.L_sort_manager->FlushCache();
     table_sizes[1] = x + 1;
 

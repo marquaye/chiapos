@@ -211,7 +211,7 @@ public:
             assert(id_len == kIdLen);
 
             std::cout << std::endl
-                      << "Starting phase 1/4: Forward Propagation into tmp files... "
+                      << "Starting phase new 1/4: Forward Propagation into tmp files... "
                       << Timer::GetNow();
 
             Timer p1;
