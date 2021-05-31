@@ -5,8 +5,6 @@
 #include "blake3.h"
 #include "blake3_impl.h"
 
-const char *blake3_version(void) { return BLAKE3_VERSION_STRING; }
-
 INLINE void chunk_state_init(blake3_chunk_state *self, const uint32_t key[8],
                              uint8_t flags) {
   memcpy(self->cv, key, BLAKE3_KEY_LEN);
@@ -384,6 +382,7 @@ void blake3_hasher_init_derive_key_raw(blake3_hasher *self, const void *context,
 void blake3_hasher_init_derive_key(blake3_hasher *self, const char *context) {
   blake3_hasher_init_derive_key_raw(self, context, strlen(context));
 }
+
 // As described in hasher_push_cv() below, we do "lazy merging", delaying
 // merges until right before the next CV is about to be added. This is
 // different from the reference implementation. Another difference is that we
