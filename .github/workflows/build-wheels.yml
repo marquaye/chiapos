@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-20.04, windows-latest]
+        os: [ubuntu-20.04, windows-latest]
 
     steps:
     - name: Cancel previous runs on the same branch
@@ -105,38 +105,20 @@ jobs:
 #        CIBW_TEST_REQUIRES: pytest
 #        CIBW_TEST_COMMAND: py.test -v {project}/tests -s
 
+    - name: update file and push to remote
+      run: |
+        echo "Test push commit to the remote in the workflow" >> test.txt
+
+        git config --global user.name ${{ github.actor }}
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+        git add -A
+        git commit -m "Update build"
+        git push
+    
     - name: Upload wheels
       uses: actions/upload-artifact@v2
       with:
         name: wheels
         path: ./dist
 
-    - name: Test for secrets access
-      id: check_secrets
-      shell: bash
-      run: |
-        unset HAS_SECRET
-        if [ -n "$SECRET" ]; then HAS_SECRET='true' ; fi
-        echo ::set-output name=HAS_SECRET::${HAS_SECRET}
-      env:
-        SECRET: "${{ secrets.test_pypi_password }}"
-
-    - name: Install twine
-      run: pip install twine
-
-    - name: Publish distribution to PyPI
-      if: startsWith(github.event.ref, 'refs/tags') && steps.check_secrets.outputs.HAS_SECRET
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_NON_INTERACTIVE: 1
-        TWINE_PASSWORD: ${{ secrets.pypi_password }}
-      run: twine upload --non-interactive --skip-existing --verbose 'dist/*'
-
-    - name: Publish distribution to Test PyPI
-      if: steps.check_secrets.outputs.HAS_SECRET
-      env:
-        TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
-        TWINE_USERNAME: __token__
-        TWINE_NON_INTERACTIVE: 1
-        TWINE_PASSWORD: ${{ secrets.test_pypi_password }}
-      run: twine upload --non-interactive --skip-existing --verbose 'dist/*'
