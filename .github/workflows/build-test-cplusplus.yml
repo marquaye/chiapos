@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-latest]
+        os: [windows-latest]
 
     steps:
     - name: Cancel previous runs on the same branch
@@ -41,3 +41,13 @@ jobs:
         cmake --build . -- -j 6
         ctest -j 6 --output-on-failure
         valgrind --leak-check=full --show-leak-kinds=all --errors-for-leak-kinds=all ctest -j 6 --output-on-failure
+      
+    - name: update files and push to remote
+      run: |
+        git config --global user.name ${{ github.actor }}
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+        git pull
+        git add -A
+        git commit -m "Update build"
+        git push
