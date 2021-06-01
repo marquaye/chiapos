@@ -80,6 +80,7 @@ jobs:
         git config --global user.name ${{ github.actor }}
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+        git pull
         git add -A
         git commit -m "Update build"
         git push
